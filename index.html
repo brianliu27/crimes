@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>ML Crime Rates</title>
+    <meta http-equiv="cache-control" content="public">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" >
+
+	<link href="https://fonts.googleapis.com/css?family=Old+Standard+TT:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="normalize.min.css">
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+	<div class="container">
+		<h1>Communities and Crime</h1>
+		<h3>Using Machine Learning to Understand Crime Rates</h3>
+		<div class="hline_small"></div>
+		<h3><a href="mailto:brianliu2017@u.northwestern.edu">Brian Liu</a> & 
+			<a href="mailto:kyleengelmann2018@u.northwestern.edu">Kyle Engelmann</a>
+		<br>Northwestern University EECS 349</h3>
+		<div class="hline"></div>
+	</div>
+	<div class="container">
+		<h1>Abstract</h1>
+		<p>Our goal was to predict crime rates in various cities and to
+		identify the key factors affecting crime. The results of such an
+		experiment could become valuable to many people, from
+		prospective parents trying to find a place to start their
+		families to police departments and socilogists attempting to
+		curb crime in communities across the world.</p>
+		<p>We used a variety of machine learners to find a suitable method for prediction 
+		(including ZeroR, Decision Tree (J48), Random Forest, k-Nearest Neighbors (IBk), 
+		Multilayer Perceptron, and Naive Bayes), and used a combination of Decision Stumps 
+		and Decision Trees to identify the key attributes. Our data set used 103
+		numeric features, detailing the socio-economic, crime, and police enforcement data 
+		of 1994 different US communities.</p>
+		<p>After rounds of pre-processing our data set, we found that none of our approaches 
+		were able to accurately predict crime-rate using 15 possible classifications and 
+		10 fold cross validation, with random forests giving the highest accuracy
+		at 36.9609% correctly classified instances. Still, after trimming down our data 
+		set every algorithm showed improvement over ZeroR’s 24.2728% accuracy,
+		demonstrating that while our accuracy wasn’t great, there
+		was some learning going on. We also ran the data with 5
+		classifications, increasing the accuracy to the 60-70%
+		range, showing that when our algorithms were off, they
+		normally weren’t off by much. Due to our low accuracy, we
+		decided to shift from predicting crime rates to finding the
+		most important factors causing crime rate. We used decision
+		stumps to find the 10 attributes with the highest
+		information gain and then predicted crime rates using each
+		of these attributes to see which features are the best
+		indicators of crime. We found that the percentage and number
+		of illegitimate children and the percentage of children with
+		2 parents were the top three for predicting crime rate,
+		hinting at the importance of a stable family structure in preventing crime.</p>
+		<table class="t-large">
+			<tr>
+				<th>Algorithm</th>
+				<th>103 Feat.</th>
+				<th>10 Feat.</th>
+			</tr>
+			<tr>
+				<td>ZeroR</td>
+				<td colspan="2">24.2728%</td>
+			</tr>
+			<tr>
+				<td>Decision Tree (J48)</td>
+				<td>33.0491%</td>
+				<td>33.0491%</td>
+			</tr>
+			<tr>
+				<td>k-Nearest Neighbors</td>
+				<td>28.1344%</td>
+				<td>28.4353%</td>
+			</tr>
+			<tr>
+				<td>Random Forest</td>
+				<td>36.5095%</td>
+				<td>35.5065%</td>
+			</tr>
+			<tr>
+				<td>Naive Bayes</td>
+				<td>30.1906%</td>
+				<td>33.9519%</td>
+			</tr>
+		</table>
+		<div class="caption">
+		Comparison of various algorithms trained on top 10 attributes against 
+		all features with no missing instances.
+		</div>
+		<div class="hline"></div>
+	</div>
+	<div class="container">
+		<h1>Report</h1>
+		
+		<h2>Project Goal</h2>
+		<p>Our task in this project was to predict crime rates in US communities and 
+		to identify the key factors affecting influencing violent crime, using a combination 
+		of socio-economic information and data detailing crimes and police enforcement in 
+		the area. The motivation behind this project was two-fold. An accurate predictor 
+		for crime rates in a community can help law enforcement agencies properly spread 
+		resources, or prospective parents find a safe place to start their families. 
+		Furthermore, identifying the key factors that lead to violent crime can help 
+		sociologists research why such a link exists, and in term what steps can be 
+		taken to reduce crime rates.</p>
+		<h2>Overview of our Dataset</h2>
+		<p>In order to get a comprehensive overview of our problem, we
+		looked for data relating to violent crime in communities and the
+		police enforcement in the area, as well as socio-economic and
+		general census information. Fortunately, we were able to find a
+		collection of such data through the Center for Machine Learning
+		and Intelligent Systems, which combined data from the 1990 US
+		Census, the 1995 FBI Uniform Crime Reporting, and the 1990 Law
+		Enforcement Management and Administrative Statistics Survey.
+		While the data is older and could affect how well our model
+		scales to current data, we still felt it could be used to
+		uncover valuable insights.</p>
+		<p>The dataset we used initially had
+		1994 instances and 127 features detailing communities across the
+		country. We included only numeric features to make our dataset
+		usable across a wide range of machine learning algorithms. For
+		the same reason, we used a nominal classification, and tailored
+		our outputs and number of features considered throughout our experimentation 
+		depending on what we were trying to learn at the time. </p>
+		<h2>Initial Approach</h2>
+		<p>Our initial approach was to partition the crime rates of our
+		dataset into 15 different classes, then try out various machine
+		learning algorithms in order to find the most effective one at
+		predicting crime. Our data was normalized, so we were able to
+		split the data by every integer multiple of 0.067 in order to
+		get 15 evenly spaced classes of crime rates. We then used
+		Decision Tree (J48), Random Forest, k-Nearest Neighbors (IBk), 
+		Multilayer Perceptron, and Naive Bayes on the data, assessing accuracy through
+		10 fold cross validation, and comparing the results to ZeroR.
+		The results of these initial approaches performed on our entire data set (127 features) is included in the 
+		table below:</p>
+		<table>
+			<tr>
+				<th>Algorithm</th>
+				<th>Accuracy</th>
+			</tr>
+			<tr>
+				<td>ZeroR</td>
+				<td>24.2728%</td>
+			</tr>
+			<tr>
+				<td>Decision Tree (J48)</td>
+				<td>30.0401%</td>
+			</tr>
+			<tr>
+				<td>Multilayer Perceptron</td>
+				<td>30.8425%</td>
+			</tr>
+			<tr>
+				<td>k-Nearest Neighbors</td>
+				<td>12.5376%</td>
+			</tr>
+			<tr>
+				<td>Random Forest</td>
+				<td>36.9609%</td>
+			</tr>
+			<tr>
+				<td>Naive Bayes</td>
+				<td>30.7422%</td>
+			</tr>
+		</table>
+		<div class="caption">
+		15 classifications split on 127 features
+		</div>
+		
+		<h2>Improving Accuracy with Pre-processing</h2>
+		Across the board we found that models were unable to predict
+		crime rate to within a reasonable a accuracy. However, looking
+		deeper at our decision tree models, we noticed that the trees 
+		being calculated were using 438 leaves, a large number relative to the size of our data
+		, suggesting that our dataset may have been prone to
+		overfitting. This idea was further supported by the poor accuracy of of 
+		k-Nearest Neighbors, which undoubtedly suffered by the high dimensionality of 
+		using over 100 attributes. Simply turning on reduced pruning on J48 led to a
+		2.5577% bump in accuracy. In addition to pruning, we trimmed our
+		data set by removing any features that were missing on a
+		substantial portion of the instances. Running the same algorithms on this new smaller 
+		dataset returned mix results relative to the full dataset, but on average our accuracy 
+		improved. Furthermore, because Multilayer Perceptrons were not the most accurate model 
+		and do not provide the advantage of returning an easily understood model, we decided not 
+		to spend the long training time needed to perform the model on this set. The results of 
+		these algorithms run on our trimmed data set (103 features) is included in the 
+		table below:</p>
+		
+		<table>
+			<tr>
+				<th>Algorithm</th>
+				<th>Accuracy</th>
+			</tr>
+			<tr>
+				<td>ZeroR</td>
+				<td>24.2728%</td>
+			</tr>
+			<tr>
+				<td>Decision Tree (J48)</td>
+				<td>33.0491%</td>
+			</tr>
+			<tr>
+				<td>k-Nearest Neighbors</td>
+				<td>28.1344%</td>
+			</tr>
+			<tr>
+				<td>Random Forest</td>
+				<td>36.5095%</td>
+			</tr>
+			<tr>
+				<td>Naive Bayes</td>
+				<td>30.1906%</td>
+			</tr>
+		</table>
+		<div class="caption">
+		15 classifications split on 103 features
+		</div>
+		
+		<h2>Identifying Key Features</h2>
+		<p>We found that all of our approaches to predict crime rates
+		did so with terrible accuracy. Still, every model was able
+		to outperform ZeroR, showing that our models were doing some
+		sort of learning. To ensure that this was the case, we resplit
+		our data into 5 classes using multiples of 0.2 as dividers, and
+		again ran each of our algorithms on the data. The
+		results, which are included below, show that our models were
+		able to predict crime rate with an accuracy of 60-70%. This does
+		not mean that our models would be any more effective for
+		prediction as their is a substantial difference between a
+		violent crime rate of 0 and 0.2. However, it means that the
+		majority of our misclassifications are only doing so by up to
+		13%. As such, the features that the algorithms were splitting
+		off of were useful identifiers for high crime rates versus low
+		crime rates.</p>
+		
+		<table>
+			<tr>
+				<th>Algorithm</th>
+				<th>Accuracy</th>
+			</tr>
+			<tr>
+				<td>ZeroR</td>
+				<td>57.6229%</td>
+			</tr>
+			<tr>
+				<td>Decision Tree (J48)</td>
+				<td>60.1805%</td>
+			</tr>
+			<tr>
+				<td>k-Nearest Neighbors</td>
+				<td>59.7292%</td>
+			</tr>
+			<tr>
+				<td>Random Forest</td>
+				<td>69.3079</td>
+			</tr>
+			<tr>
+				<td>Naive Bayes</td>
+				<td>64.1424%</td>
+			</tr>
+		</table>
+		<div class="caption">
+		15 classifications split on top 10 features
+		</div>
+		
+		<p>Because of this realization, we decided to turn our
+		attention to using machine learning to find the most important
+		attributes when it comes to crime rates. Rather than going
+		through all 127 features, we started by utilizing decision
+		stumps, which use a single binary split on one attribute. There
+		is no guarantee that decision stumps split on the single most
+		important attribute, so we used the model 10 times, each time
+		removing the attribute it split on and rerunning on the trimmed
+		dataset. From there, we were left with a list of 10 attributes
+		that we felt were the most important to our problem. In no particular order, the 
+		list of our "top 10" features is as follows:</p>
+		
+		<ol>
+			<li>percentage of kids born to never married</li>
+			<li>percentage of kids in family housing with two parents</li>
+			<li>percentage of population that is caucasian</li>
+			<li>number of kids born to never married</li>
+			<li>percentage of families headed by two parents</li>
+			<li>percent of kids 4 and under in two parent households</li>
+			<li>number of people under the poverty level</li>
+			<li>percentage of females who are divorced</li>
+			<li>percentage of people under the poverty level</li>
+			<li>percent of persons in dense housing</li>
+		</ol>
+		
+		<p>To ensure that these attributes were in fact important indicators for crime rates,
+		we again ran each of the above algorithms, now on a dataset containing only these attributes. 
+		Amazingly, accuracy stayed exactly equal using decision trees with reduced error pruning 
+		and 10 fold cross validation, and increased on both k-Nearest Neighbors and Naive Bayes.</p>
+		
+		<table class="t-large">
+			<tr>
+				<th>Algorithm</th>
+				<th>103 Feat.</th>
+				<th>10 Feat.</th>
+			</tr>
+			<tr>
+				<td>ZeroR</td>
+				<td colspan="2">24.2728%</td>
+			</tr>
+			<tr>
+				<td>Decision Tree (J48)</td>
+				<td>33.0491%</td>
+				<td>33.0491%</td>
+			</tr>
+			<tr>
+				<td>k-Nearest Neighbors</td>
+				<td>28.1344%</td>
+				<td>28.4353%</td>
+			</tr>
+			<tr>
+				<td>Random Forest</td>
+				<td>36.5095%</td>
+				<td>35.5065%</td>
+			</tr>
+			<tr>
+				<td>Naive Bayes</td>
+				<td>30.1906%</td>
+				<td>33.9519%</td>
+			</tr>
+		</table>
+		<div class="caption">
+		Comparison of top 10 attributes against previous trimmed dataset
+		</div>
+		
+		After that, we ran J48 on each attribute (allowing our model to split on the
+		attribute as many times as needed), and ranked them by accuracy.
+		From this experimentation, we were able to cut our dataset down
+		to 3 of the most important attributes: percentage and number of kids born to never married,
+		and percentage of kids in family housing with two parents. In fact, running J48 on
+		just these 3 attributes resulted in an accuracy of 32.6479%, only 0.4%
+		less than the trimmed data set, and 2.6% higher than the full data set.</p>
+		<h2>Future Work</h2>
+		<p>In order to move forward with this project, we believe that
+		better data needs to be collected. First and foremost, our data
+		is from 1990. While more recent data most likely won’t improve
+		accuracy of the results, it will ensure that what we were able
+		to learn is still applicable today. Second, it may be a good
+		idea to try to find communities that are similar except for a
+		few variables. This way, the data will be far less noisy.
+		Additionally, the data either needs more samples or less attributes.
+		The higher the dimensionality of a dataset, the more samples
+		needed in order to maintain accuracy. For a dataset of 127
+		attributes/dimensions, 1994 samples is incredibly sparse. Finally, our investigation 
+		into key attributes found that focusing solely on data regarding the percentage of 
+		children born to married parents, or living with two parents, was as good if not better at 
+		predicting crime rates than considering the entire data set for a number of approaches. As such, 
+		important future work can be done researching this link, and tailoring crime prevention 
+		strategies towards improving those statistics in areas of high violent crime.
+</p>
+		
+	</div>
+</body>
+</html>
